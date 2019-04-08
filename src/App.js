@@ -95,8 +95,8 @@ console.log('foo');
               )}
             </select>
             {
-              this.state.currency !== 'PHP' && (<div>
-                <a href="#" className="link" onClick={() => this.setCurrency('PHP')} style={{color: "black", fontSize: 16, fontFamily: 'Bungee'}}> [RESET] </a>
+              this.state.currency !== 'GBP' && (<div>
+                <a href="#" className="link" onClick={() => this.setCurrency('GBP')} style={{color: "black", fontSize: 16, fontFamily: 'Bungee'}}> [RESET] </a>
               </div>)
             }
           </div>
