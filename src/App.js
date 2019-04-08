@@ -16,7 +16,7 @@ class App extends Component {
     Chart.defaults.global.defaultFontColor = '#000';
     Chart.defaults.global.defaultFontSize = 16;
 
-    this.state = {historicalData: null, currency: "PHP"}
+    this.state = {historicalData: null, currency: "GBP"}
     this.onCurrencySelect = this.onCurrencySelect.bind(this)
   }
 
@@ -25,14 +25,14 @@ class App extends Component {
   }
 
   getBitcoinData () {
-    fetch(`https://api.coindesk.com/v1/bpi/historical/close.json?currency=${this.state.currency}`)
+    fetch(`https://api.coindesk.com/v1/bpi/historical/close.json?currency=${this.state.currency}&start=2013-09-01&end=2013-10-01`)
       .then(response => response.json())
       .then(historicalData => this.setState({historicalData}))
       .catch(e => e)
   }
 
-  formatChartData () {
-    const {bpi} = this.state.historicalData
+  formatChartData (historicalData) {
+    const {bpi} = historicalData//this.state.historicalData
 
     return {
       labels: _.map(_.keys(bpi), date => moment(date).format("ll")),
@@ -70,6 +70,17 @@ class App extends Component {
     this.setCurrency(e.target.value)
   }
 
+  next (){
+console.log('foo');
+    fetch(`https://api.coindesk.com/v1/bpi/historical/close.json?currency=GBP&start=2013-10-01&end=2013-11-01`)
+      .then(response => response.json())
+      //.then(historicalData => this.setState({historicalData}))
+      .then(response => this.setState((state, props) =>({historicalData:response})))
+
+
+      .catch(e => e)
+  }
+
   render() {
     if (this.state.historicalData) {
       return (
@@ -85,13 +96,14 @@ class App extends Component {
             </select>
             {
               this.state.currency !== 'PHP' && (<div>
-                <a href="#" className="link" onClick={() => this.setCurrency('PHP')} style={{color: "black", fontSize: 16, fontFamily: 'Bungee'}}> [CLICK HERE TO RESET] </a>
+                <a href="#" className="link" onClick={() => this.setCurrency('PHP')} style={{color: "black", fontSize: 16, fontFamily: 'Bungee'}}> [RESET] </a>
               </div>)
             }
           </div>
+          <button onClick={this.next}> Next </button>
 
           <div style={{marginTop: 10}}>
-            <Line data={this.formatChartData()} height={250} />
+            <Line data={this.formatChartData(this.state.historicalData)} height={250} width={450}/>
           </div>
         </div>
       )
