@@ -5,7 +5,8 @@ import './App.css';
 import _ from 'lodash';
 import { Line, Chart } from 'react-chartjs-2';
 import moment from 'moment';
-import currencies from './supported-currencies.json';
+import currencies from './currencies.json';
+import months from './months.json';
 
 console.log(currencies)
 
@@ -20,12 +21,14 @@ class App extends Component {
     Chart.defaults.global.defaultFontColor = '#000';
     Chart.defaults.global.defaultFontSize = 16;
 
-    this.state = {historicalData: foo, currency: "GBP", year:'2013'}
+    this.state = {historicalData: foo, currency: "GBP", year:'2013', month:'01'}
     this.onCurrencySelect = this.onCurrencySelect.bind(this);
 
     // this.next = this.next.bind(this);
     // this.refresh = this.refresh.bind(this);
     this.setYear = this.setYear.bind(this)
+    this.setMonth = this.setMonth.bind(this);
+    this.onMonthSelect = this.onMonthSelect.bind(this);
     this.formatChart = this.formatChart.bind(this);
     this.getBitcoinData = this.getBitcoinData.bind(this);
         this.getBitcoinDataJune = this.getBitcoinDataJune.bind(this);
@@ -93,10 +96,16 @@ class App extends Component {
     }
   }
 
+
+
   setYear(year){
     var foo = year;
     this.setState({year:foo})
     console.log('set year: ', foo, ' type: ', typeof(foo))
+  }
+
+  setMonth(mon){
+    this.setState({month:mon});
   }
 
   setCurrency (currency) {
@@ -107,6 +116,9 @@ class App extends Component {
     this.setCurrency(e.target.value)
   }
 
+  onMonthSelect(e){
+    this.setMonth(e.target.value);
+  }
 
   formatChart(data){
 const {bpi} = this.state.historicalData
@@ -151,6 +163,13 @@ const {bpi} = this.state.historicalData
                 <option key={`${index}-${obj.country}`} value={obj.currency}> {obj.currency} </option>
               )}
             </select>
+            <span style={{fontSize: 18, fontFamily: 'Bungee'}}> Select month: </span>
+            <select value={this.state.month} onChange={this.onMonthSelect}>
+              {months.map((obj, index) =>
+                <option key={`${index}-${obj.name}`} value={obj.number}> {obj.number} </option>
+              )}
+            </select>
+
             {
               this.state.currency !== 'GBP' && (<div>
                 <a href="#" className="link" onClick={() => this.setCurrency('GBP')} style={{color: "black", fontSize: 16, fontFamily: 'Bungee'}}> [RESET] </a>
@@ -159,30 +178,20 @@ const {bpi} = this.state.historicalData
           </div>
 
           <div >
-            <button onClick={()=>{this.setYear('2010')}}>2010</button>
-            <button onClick={()=>{this.setYear('2011')}}>2011</button>
-            <button onClick={()=>{this.setYear('2012')}}>2012</button>
-            <button onClick={()=>{this.setYear('2013')}}>2013</button>
-            <button onClick={()=>{this.setYear('2014')}}>2014</button>
-            <button onClick={()=>{this.setYear('2015')}}>2015</button>
-            <button onClick={()=>{this.setYear('2016')}}>2016</button>
-            <button onClick={()=>{this.setYear('2017')}}>2017</button>
-            <button onClick={()=>{this.setYear('2018')}}>2018</button>
-
+            <button onClick={()=>{this.setYear('2010')}}>{this.state.year=='2010'?'** 2010 **':'2010'} </button>
+            <button onClick={()=>{this.setYear('2011')}}>2011 </button>
+            <button onClick={()=>{this.setYear('2012')}}>2012 </button>
+            <button onClick={()=>{this.setYear('2013')}}>2013 </button>
+            <button onClick={()=>{this.setYear('2014')}}>2014 </button>
+            <button onClick={()=>{this.setYear('2015')}}>2015 </button>
+            <button onClick={()=>{this.setYear('2016')}}>2016 </button>
+            <button onClick={()=>{this.setYear('2017')}}>2017 </button>
+            <button onClick={()=>{this.setYear('2018')}}>2018 </button>
           </div>
 
-          <button onClick={()=>{this.getBitcoinData('01')}}> Jan </button>
-          <button onClick={()=>{this.getBitcoinData('02')}}> Feb </button>
-          <button onClick={()=>{this.getBitcoinData('03')}}> Mar </button>
-          <button onClick={()=>{this.getBitcoinData('04')}}> Apr </button>
-          <button onClick={()=>{this.getBitcoinData('05')}}> May </button>
-          <button onClick={()=>{this.getBitcoinData('06')}}> Jun </button>
-          <button onClick={()=>{this.getBitcoinData('07')}}> Jul </button>
-          <button onClick={()=>{this.getBitcoinData('08')}}> Aug </button>
-          <button onClick={()=>{this.getBitcoinData('19')}}> Sep </button>
-          <button onClick={()=>{this.getBitcoinData('10')}}> Oct </button>
-          <button onClick={()=>{this.getBitcoinData('11')}}> Nov </button>
-          <button onClick={()=>{this.getBitcoinData('12')}}> Dec </button>
+
+
+          <button style={{width:150,height:33,marginTop:20,color:'#ff1769',backgroundColor:'#ffffff', borderRadius:9, borderWidth:2, fontSize:18}} onClick={()=>{this.getBitcoinData(this.state.month)}}> Update Graph </button>
 
 
 
@@ -245,3 +254,19 @@ const {bpi} = this.state.historicalData
 */
 
 export default App;
+
+
+/*
+          <button onClick={()=>{this.getBitcoinData('01')}}> Jan </button>
+          <button onClick={()=>{this.getBitcoinData('02')}}> Feb </button>
+          <button onClick={()=>{this.getBitcoinData('03')}}> Mar </button>
+          <button onClick={()=>{this.getBitcoinData('04')}}> Apr </button>
+          <button onClick={()=>{this.getBitcoinData('05')}}> May </button>
+          <button onClick={()=>{this.getBitcoinData('06')}}> Jun </button>
+          <button onClick={()=>{this.getBitcoinData('07')}}> Jul </button>
+          <button onClick={()=>{this.getBitcoinData('08')}}> Aug </button>
+          <button onClick={()=>{this.getBitcoinData('19')}}> Sep </button>
+          <button onClick={()=>{this.getBitcoinData('10')}}> Oct </button>
+          <button onClick={()=>{this.getBitcoinData('11')}}> Nov </button>
+          <button onClick={()=>{this.getBitcoinData('12')}}> Dec </button>
+*/
